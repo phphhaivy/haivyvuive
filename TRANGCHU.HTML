@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CETEC LAB - Vòng Quay May Mắn</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #fff;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+        .button {
+            background-color: #ff7f00;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            opacity: 0.5;
+        }
+        .button:disabled {
+            cursor: not-allowed;
+        }
+        .button.active {
+            opacity: 1;
+        }
+        .hidden {
+            display: none;
+        }
+        #wheel {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 5px solid #ff7f00;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 20px auto;
+            transition: transform 3s ease-out;
+        }
+        #popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CETEC LAB - Vòng Quay May Mắn</h1>
+    <div class="container" id="step1">
+        <h2>Đăng ký quay số nhận quà</h2>
+        <form id="infoForm">
+            <div class="form-group">
+                <label>Tên:</label>
+                <input type="text" id="name" required>
+            </div>
+            <div class="form-group">
+                <label>Tuổi:</label>
+                <input type="number" id="age" required>
+            </div>
+            <div class="form-group">
+                <label>Số điện thoại:</label>
+                <input type="text" id="phone" required>
+            </div>
+            <div class="form-group">
+                <label>Nha khoa/Labo:</label>
+                <input type="text" id="clinic" required>
+            </div>
+            <button type="button" class="button" id="submitBtn" disabled>Gửi thông tin</button>
+        </form>
+    </div>
+
+    <div class="container hidden" id="step2">
+        <h2>Like fanpage để nhận lượt quay</h2>
+        <p><a href="https://www.facebook.com/viety" target="_blank" id="link1">Like fanpage Việt Ý</a></p>
+        <p><a href="https://www.facebook.com/ceteclab" target="_blank" id="link2">Like fanpage Cetec Lab</a></p>
+        <button class="button" id="spinAccessBtn" disabled>Nhận lượt quay</button>
+    </div>
+
+    <div class="container hidden" id="step3">
+        <h2>Vòng Quay May Mắn</h2>
+        <div id="wheel">🎁</div>
+        <p>Nhấn vào vòng quay để thử vận may!</p>
+    </div>
+
+    <div id="popup">
+        <h2>🎉 Chúc mừng! 🎉</h2>
+        <p id="prizeText"></p>
+        <button onclick="document.getElementById('popup').style.display='none'">Đóng</button>
+    </div>
+
+    <script>
+        const form = document.getElementById("infoForm");
+        const submitBtn = document.getElementById("submitBtn");
+        const step1 = document.getElementById("step1");
+        const step2 = document.getElementById("step2");
+        const step3 = document.getElementById("step3");
+        const spinAccessBtn = document.getElementById("spinAccessBtn");
+        const wheel = document.getElementById("wheel");
+        const popup = document.getElementById("popup");
+        const prizeText = document.getElementById("prizeText");
+
+        function validateForm() {
+            const name = document.getElementById("name").value.trim();
+            const age = document.getElementById("age").value.trim();
+            const phone = document.getElementById("phone").value.trim();
+            const clinic = document.getElementById("clinic").value.trim();
+            submitBtn.disabled = !(name && age && phone.length === 10 && clinic);
+            if (!submitBtn.disabled) {
+                submitBtn.classList.add("active");
+            }
+        }
+
+        form.addEventListener("input", validateForm);
+
+        submitBtn.addEventListener("click", function() {
+            step1.classList.add("hidden");
+            step2.classList.remove("hidden");
+        });
+
+        let clickedLinks = 0;
+
+        function checkLinks() {
+            clickedLinks++;
+            if (clickedLinks === 2) {
+                setTimeout(() => {
+                    spinAccessBtn.disabled = false;
+                    spinAccessBtn.classList.add("active");
+                }, 3000);
+            }
+        }
+
+        document.getElementById("link1").addEventListener("click", checkLinks);
+        document.getElementById("link2").addEventListener("click", checkLinks);
+
+        spinAccessBtn.addEventListener("click", function() {
+            step2.classList.add("hidden");
+            step3.classList.remove("hidden");
+        });
+
+        const prizes = ["Voucher 100k", "Bàn chải điện", "Sáp đánh bóng", "Nước súc miệng"];
+
+        wheel.addEventListener("click", function() {
+            const randomPrize = prizes[Math.floor(Math.random() * prizes.length)];
+            wheel.style.transform = `rotate(${Math.random() * 360 + 720}deg)`;
+            setTimeout(() => {
+                prizeText.innerText = `Bạn đã trúng: ${randomPrize}! 🎁`;
+                popup.style.display = "block";
+            }, 3000);
+        });
+    </script>
+
+</body>
+</html>
